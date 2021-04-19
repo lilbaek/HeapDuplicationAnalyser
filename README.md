@@ -1,6 +1,6 @@
 # HeapDuplicationAnalyser
 
-Small tool to help find duplicated strings in memory dumps. 
+Small tool to help find duplicated strings in .NET memory dumps. 
 
 If you have many duplicated strings you might considering using String.Intern as an optimization point to save memory.
 
