@@ -6,9 +6,10 @@ using Microsoft.Diagnostics.Runtime;
 
 namespace HeapDuplicationAnalyser
 {
-    class Program
+   static class Program
     {
-        private static readonly Dictionary<string, int> DuplicatedInstances = new Dictionary<string, int>();
+        private static readonly Dictionary<string, uint> DuplicatedInstances = new Dictionary<string, uint>();
+        private static readonly Dictionary<string, ulong> InstanceSize = new Dictionary<string, ulong>();
 
         static void Main(string[] args)
         {
@@ -35,7 +36,8 @@ namespace HeapDuplicationAnalyser
             var orderByDescending = DuplicatedInstances.OrderByDescending(x => x.Value).Take(100).ToList();
             foreach (var pair in orderByDescending)
             {
-                Console.WriteLine("Times duplicated " + pair.Value + " - value: " + pair.Key);
+                var bytesSize = pair.Value * InstanceSize[pair.Key];
+                Console.WriteLine($"Times duplicated {pair.Value} - value: {pair.Key} (Wasted bytes: {bytesSize} ({bytesSize  / 1024 / 1024} mb)");
             }
         }
 
@@ -51,6 +53,7 @@ namespace HeapDuplicationAnalyser
             if (!DuplicatedInstances.ContainsKey(asString))
             {
                 DuplicatedInstances.Add(asString, 1);
+                InstanceSize.Add(asString, obj.Size);
             }
             else
             {
